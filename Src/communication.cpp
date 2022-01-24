@@ -54,6 +54,8 @@ void communicator::main(void* p){
 						cmd_arg = arg;
 						cmd_num = cmd;
 
+						uart_handle << acknowledge_packet_code;
+
 						osSemaphoreRelease(cmd_ready_sem);
 					}
 					else{
