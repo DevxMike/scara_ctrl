@@ -26,6 +26,7 @@
 #include "app.h"
 #include "motor_ctrl.h"
 #include "communication.h"
+#include "command_executor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -75,6 +76,12 @@ const osThreadAttr_t motor_ctrl_attr = {
 
 const osThreadAttr_t communication_attr = {
 	.name = "communication",
+	.stack_size = 128*4,
+	.priority = osPriorityLow
+};
+
+const osThreadAttr_t command_exec_atr = {
+	.name = "command execution",
 	.stack_size = 128*4,
 	.priority = osPriorityLow
 };
@@ -168,6 +175,7 @@ int main(void)
   osThreadNew(app::main, NULL, &main_thread_attr);
   osThreadNew(motor_controller::main, NULL, &motor_ctrl_attr);
   osThreadNew(communicator::main, NULL, &communication_attr);
+  osThreadNew(command_exec::main, NULL, &command_exec_atr)
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
