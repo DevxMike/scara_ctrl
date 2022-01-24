@@ -36,9 +36,9 @@ void communicator::main(void* p){
 		osSemaphoreAcquire(cmd_sem, osWaitForever);
 
 		if(cmd_buffer[0] == 'S' && cmd_buffer[25] == 'E'){
-			if(isdigit(cmd_buffer[1] && isdigit(cmd_buffer[2]))){
+			if(isdigit(cmd_buffer[1]) && isdigit(cmd_buffer[2])){
 				auto cmd = (cmd_buffer[1] - '0') * 10 + (cmd_buffer[2] - '0');
-				if(isdigit(cmd_buffer[3] && isdigit(cmd_buffer[4]))){
+				if(isdigit(cmd_buffer[3]) && isdigit(cmd_buffer[4])){
 					auto data_len = (cmd_buffer[3] - '0') * 10 + (cmd_buffer[4] - '0');
 					auto dummy_set_zeros = true;
 
@@ -49,7 +49,7 @@ void communicator::main(void* p){
 						}
 					}
 					if(dummy_set_zeros){
-						auto arg = strtod(&cmd_buffer[5], NULL);
+						auto arg = strtod((char*)&cmd_buffer[5], NULL);
 
 						cmd_arg = arg;
 						cmd_num = cmd;
@@ -87,7 +87,7 @@ void communicator::read_thread(void* p){
 		if(c > 0){
 			buffer[i++] = c;
 			if(c == 'E' && i != 26){
-				uart_handle << "Len error, try again!\n\r";
+				uart_handle << wrong_packet_code;
 				i = 0;
 			}
 			else if(c == 'E' && i == 26){
@@ -98,7 +98,7 @@ void communicator::read_thread(void* p){
 			}
 			else if(i == 26){
 				i = 0;
-				uart_handle << "Format error!\r\n";
+				uart_handle << wrong_packet_code;
 			}
 		}
 	}

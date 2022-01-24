@@ -175,7 +175,7 @@ int main(void)
   osThreadNew(app::main, NULL, &main_thread_attr);
   osThreadNew(motor_controller::main, NULL, &motor_ctrl_attr);
   osThreadNew(communicator::main, NULL, &communication_attr);
-  osThreadNew(command_exec::main, NULL, &command_exec_atr)
+  osThreadNew(command_exec::main, NULL, &command_exec_atr);
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
