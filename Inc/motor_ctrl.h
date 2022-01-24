@@ -14,8 +14,6 @@ class motor_controller{
 	static void update_joint_4(void* p);
 	static void update_joint_5(void* p);
 
-
-
 public:
 	static osSemaphoreId_t main_joint_sem;
 	static void main(void*);

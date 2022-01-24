@@ -14,9 +14,13 @@ class communicator{
 	static void mem_cpy_cplt_callback(DMA_HandleTypeDef* hdma);
 
 public:
+	static uint8_t cmd_num;
+	static double cmd_arg;
+
 	static uart_wrapper uart_handle;
 	static uint8_t cmd_buffer[26];
 	static osSemaphoreId_t cmd_sem;
+	static osSemaphoreId_t cmd_ready_sem;
 
 	static void main(void* p);
 	static void tx_callback();
