@@ -4,6 +4,7 @@
 
 const osThreadAttr_t read_task_attr = {
 	.name = "read_task",
+	.stack_size = 128 * 4,
 	.priority = osPriorityLow,
 };
 

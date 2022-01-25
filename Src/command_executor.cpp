@@ -8,6 +8,7 @@ const char* no_such_cmd_code = "A3E";
 
 const osThreadAttr_t set_x_attr = {
 	.name = "set_x",
+	.stack_size = 128 * 4,
 	.priority = osPriorityLow,
 };
 

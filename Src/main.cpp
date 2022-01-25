@@ -59,25 +59,25 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 /* USER CODE BEGIN PV */
 const osThreadAttr_t main_thread_attr = {
 	.name = "main_task",
-	.stack_size = 128*4,
+	.stack_size = 128*8,
 	.priority = osPriorityLow
 };
 
 const osThreadAttr_t motor_ctrl_attr = {
 	.name = "motor_ctrl",
-	.stack_size = 128*4,
+	.stack_size = (128*4)*2,
 	.priority = osPriorityLow
 };
 
 const osThreadAttr_t communication_attr = {
 	.name = "communication",
-	.stack_size = 128*4,
+	.stack_size = 128*8,
 	.priority = osPriorityLow
 };
 
 const osThreadAttr_t command_exec_attr = {
 	.name = "command_execution",
-	.stack_size = 128*4,
+	.stack_size = 128*8,
 	.priority = osPriorityLow
 };
 
@@ -193,7 +193,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  osThreadSuspend(NULL);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

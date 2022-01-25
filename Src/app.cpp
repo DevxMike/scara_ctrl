@@ -57,11 +57,6 @@ void app::main(void * params){
 
 	hd44780::lcd lcd_display{ lcd_gpio, hd44780::lcd::mode::lcd_4_bit };
 
-	unsigned char txt[] = "inicjalizacja";
-
-
-	lcd_display.write(txt);
-
 	osThreadNew(
 			app::manage_lcd,
 			reinterpret_cast<void*>(&lcd_display),
@@ -79,7 +74,7 @@ void app::main(void * params){
 
 
 	while(1){
-
+		osThreadSuspend(NULL);
 	}
 	osThreadTerminate(NULL);
 }
@@ -120,7 +115,7 @@ void app::manage_lcd(void* p){
 		lcd_display->send_data_byte('.');
 		osDelay(1);
 		lcd_display->write_number(((uint32_t)(voltage * 10)) % 10);
-		osDelay(1000);
+		osDelay(500);
 		HAL_ADC_Start_DMA(&adc_handle, (uint32_t*)adc_data, 2);
 	}
 	osThreadTerminate(NULL);

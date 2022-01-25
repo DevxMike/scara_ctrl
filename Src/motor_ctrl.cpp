@@ -57,20 +57,21 @@ void motor_controller::main(void* p){
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_4);
 
+	__HAL_TIM_SET_COMPARE(&stepper_motor_tim, TIM_CHANNEL_1, 500-1);
+
 	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
 	HAL_TIM_PWM_Start(&stepper_motor_tim, TIM_CHANNEL_1);
 
 	osSemaphoreAcquire(app::input_sem, osWaitForever);
 
-	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_RESET);
 	HAL_TIM_PWM_Stop(&stepper_motor_tim, TIM_CHANNEL_1);
 
 	while(1){
 		osSemaphoreAcquire(main_joint_sem, osWaitForever);
 		for(uint8_t i = 0; i < 5; ++i){
 			osSemaphoreRelease(joint_sem[i]);
-			osDelay(50);
 		}
 	}
 	osThreadTerminate(NULL);
