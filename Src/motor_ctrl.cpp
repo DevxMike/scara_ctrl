@@ -36,7 +36,7 @@ osSemaphoreId_t motor_controller::joint_sem[5]{
 			osSemaphoreNew(1, 1, NULL), osSemaphoreNew(1, 1, NULL)
 };
 
-double motor_controller::v1{ 0.0 }, motor_controller::v2{ 0.0 },
+double motor_controller::v1{ 100 }, motor_controller::v2{ 180.0  },
 	   motor_controller::v3{ 0.0 }, motor_controller::v4{ 0.0 },
 	   motor_controller::v5{ 0.0 }, motor_controller::x{ 0.0 },
 	   motor_controller::y{ 0.0 }, motor_controller::z{ 0.0 };
@@ -49,6 +49,13 @@ void motor_controller::main(void* p){
 	osThreadNew(update_joint_5, NULL, &joint5_ctrl_attr);
 
 	osSemaphoreAcquire(main_joint_sem, osWaitForever);
+
+	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_4);
+
+	//HAL_TIM_PWM_Start(&stepper_motor_tim, TIM_CHANNEL_1);
 
 	while(1){
 		osSemaphoreAcquire(main_joint_sem, osWaitForever);
@@ -71,10 +78,7 @@ void motor_controller::update_joint_1(void* p){ //stepper motor thread
 void motor_controller::update_joint_2(void* p){ //servo1
 	while(1){
 		osSemaphoreAcquire(joint_sem[1], osWaitForever);
-		HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_1);
-		osDelay(1000);
-		HAL_TIM_PWM_Stop(&servomechanism_tim, TIM_CHANNEL_1);
-		osDelay(1000);
+		__HAL_TIM_SET_COMPARE(&servomechanism_tim, TIM_CHANNEL_1, get_pwm(v2));
 	}
 	osThreadTerminate(NULL);
 }
@@ -82,10 +86,7 @@ void motor_controller::update_joint_2(void* p){ //servo1
 void motor_controller::update_joint_3(void* p){ //servo2
 	while(1){
 		osSemaphoreAcquire(joint_sem[2], osWaitForever);
-		HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_2);
-		osDelay(500);
-		HAL_TIM_PWM_Stop(&servomechanism_tim, TIM_CHANNEL_2);
-		osDelay(500);
+		__HAL_TIM_SET_COMPARE(&servomechanism_tim, TIM_CHANNEL_2, get_pwm(v3));
 	}
 	osThreadTerminate(NULL);
 }
@@ -93,10 +94,7 @@ void motor_controller::update_joint_3(void* p){ //servo2
 void motor_controller::update_joint_4(void* p){ //servo3
 	while(1){
 		osSemaphoreAcquire(joint_sem[3], osWaitForever);
-		HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_3);
-		osDelay(2000);
-		HAL_TIM_PWM_Stop(&servomechanism_tim, TIM_CHANNEL_3);
-		osDelay(2000);
+		__HAL_TIM_SET_COMPARE(&servomechanism_tim, TIM_CHANNEL_3, get_pwm(v4));
 	}
 	osThreadTerminate(NULL);
 }
@@ -104,10 +102,18 @@ void motor_controller::update_joint_4(void* p){ //servo3
 void motor_controller::update_joint_5(void* p){//servo 4
 	while(1){
 		osSemaphoreAcquire(joint_sem[4], osWaitForever);
-		HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_4);
-		osDelay(1000);
-		HAL_TIM_PWM_Stop(&servomechanism_tim, TIM_CHANNEL_4);
-		osDelay(1000);
+		__HAL_TIM_SET_COMPARE(&servomechanism_tim, TIM_CHANNEL_4, get_pwm(v5));
 	}
 	osThreadTerminate(NULL);
+}
+
+uint16_t motor_controller::get_pwm(double angle){
+	if(angle > max_values::max_servo_angle){
+		angle = max_values::max_servo_angle;
+	}
+	else if(angle < max_values::min_servo_angle){
+		angle = max_values::min_servo_angle;
+	}
+
+	return (5.0/9)*angle + 100;
 }

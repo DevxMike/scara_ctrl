@@ -47,8 +47,8 @@ void command_exec::main(void* p){
 				}
 				break; //inc2
 			case 10:
-				if(--motor_controller::v2 <= 0){
-					motor_controller::v2 = 0.0;
+				if(--motor_controller::v2 <= max_values::min_servo_angle){
+					motor_controller::v2 = max_values::min_servo_angle;
 				}
 				break; //dec2
 			case 11:
@@ -57,8 +57,8 @@ void command_exec::main(void* p){
 				}
 			break; //inc3
 			case 12:
-				if(--motor_controller::v3 <= 0){
-					motor_controller::v3 = 0.0;
+				if(--motor_controller::v3 <= max_values::min_servo_angle){
+					motor_controller::v3 = max_values::min_servo_angle;
 				}
 				break; //dec3
 			case 13:
@@ -67,8 +67,8 @@ void command_exec::main(void* p){
 				}
 				break; //inc4
 			case 14:
-				if(--motor_controller::v4 <= 0){
-					motor_controller::v4 = 0.0;
+				if(--motor_controller::v4 <= max_values::min_servo_angle){
+					motor_controller::v4 = max_values::min_servo_angle;
 				}
 			break; //dec4
 			case 15:
@@ -77,8 +77,8 @@ void command_exec::main(void* p){
 				}
 			break; //inc5
 			case 16:
-				if(--motor_controller::v5 <= 0){
-					motor_controller::v5 = 0.0;
+				if(--motor_controller::v5 <= max_values::min_servo_angle){
+					motor_controller::v5 = max_values::min_servo_angle;
 				}
 			break; //dec5
 			}

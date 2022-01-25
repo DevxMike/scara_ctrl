@@ -8,6 +8,7 @@ namespace max_values{
 		constexpr uint16_t max_v1 = 950;
 		constexpr uint16_t min_v1 = 100;
 		constexpr uint8_t max_servo_angle = 180;
+		constexpr uint8_t min_servo_angle = 0;
 		constexpr uint16_t max_x = 590;
 		constexpr uint16_t max_y = 740;
 		constexpr uint16_t max_z = 240;
@@ -23,6 +24,7 @@ class motor_controller{
 	static void update_joint_3(void* p);
 	static void update_joint_4(void* p);
 	static void update_joint_5(void* p);
+	static uint16_t get_pwm(double angle); //get duty cycle for given servo angle (0 - 180)
 
 public:
 	static double v1, v2, v3, v4, v5;
