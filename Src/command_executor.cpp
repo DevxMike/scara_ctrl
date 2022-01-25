@@ -1,6 +1,7 @@
 #include "command_executor.h"
 #include "communication.h"
 #include "motor_ctrl.h"
+#include "neural_net.h"
 
 const char* cmd_executed_code = "A2E";
 const char* no_such_cmd_code = "A3E";
@@ -25,7 +26,7 @@ void command_exec::main(void* p){
 			case 0: motor_controller::x = cmd_arg; break;
 			case 1: motor_controller::y = cmd_arg; break;
 			case 2: motor_controller::z = cmd_arg; break;
-			case 3: communicator::uart_handle << "set point\n\r"; break;
+			case 3: osSemaphoreRelease(neural_net::nn_sem); break;
 			case 4: communicator::uart_handle << "open handle\n\r"; break;
 			case 5: communicator::uart_handle << "close handle\n\r"; break;
 			case 6: communicator::uart_handle << "set rot handle\n\r"; break;
@@ -82,7 +83,7 @@ void command_exec::main(void* p){
 			break; //dec5
 			}
 		}
-		if(cmd > 2){
+		if(cmd > 3){
 			osSemaphoreRelease(motor_controller::main_joint_sem);
 		}
 		else{

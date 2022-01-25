@@ -27,6 +27,7 @@
 #include "motor_ctrl.h"
 #include "communication.h"
 #include "command_executor.h"
+#include "neural_net.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,12 +56,6 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 /* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
 /* USER CODE BEGIN PV */
 const osThreadAttr_t main_thread_attr = {
 	.name = "main_task",
@@ -80,9 +75,15 @@ const osThreadAttr_t communication_attr = {
 	.priority = osPriorityLow
 };
 
-const osThreadAttr_t command_exec_atr = {
-	.name = "command execution",
+const osThreadAttr_t command_exec_attr = {
+	.name = "command_execution",
 	.stack_size = 128*4,
+	.priority = osPriorityLow
+};
+
+const osThreadAttr_t neural_net_attr = {
+	.name = "neural_net",
+	.stack_size = (128*4) * 2,
 	.priority = osPriorityLow
 };
 /* USER CODE END PV */
@@ -169,13 +170,13 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   osThreadNew(app::main, NULL, &main_thread_attr);
   osThreadNew(motor_controller::main, NULL, &motor_ctrl_attr);
   osThreadNew(communicator::main, NULL, &communication_attr);
-  osThreadNew(command_exec::main, NULL, &command_exec_atr);
+  osThreadNew(command_exec::main, NULL, &command_exec_attr);
+  osThreadNew(neural_net::main, NULL, &neural_net_attr);
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
