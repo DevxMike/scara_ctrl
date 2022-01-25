@@ -1,4 +1,5 @@
 #include "motor_ctrl.h"
+#include "app.h"
 
 const osThreadAttr_t joint1_ctrl_attr = {
   .name = "stepper",
@@ -36,9 +37,9 @@ osSemaphoreId_t motor_controller::joint_sem[5]{
 			osSemaphoreNew(1, 1, NULL), osSemaphoreNew(1, 1, NULL)
 };
 
-double motor_controller::v1{ 100 }, motor_controller::v2{ 180.0  },
-	   motor_controller::v3{ 0.0 }, motor_controller::v4{ 0.0 },
-	   motor_controller::v5{ 0.0 }, motor_controller::x{ 0.0 },
+double motor_controller::v1{ 100 }, motor_controller::v2{ 90.0  },
+	   motor_controller::v3{ 90.0 }, motor_controller::v4{ 90.0 },
+	   motor_controller::v5{ 90.0 }, motor_controller::x{ 0.0 },
 	   motor_controller::y{ 0.0 }, motor_controller::z{ 0.0 };
 
 void motor_controller::main(void* p){
@@ -49,13 +50,21 @@ void motor_controller::main(void* p){
 	osThreadNew(update_joint_5, NULL, &joint5_ctrl_attr);
 
 	osSemaphoreAcquire(main_joint_sem, osWaitForever);
+	osSemaphoreAcquire(app::input_sem, osWaitForever);
 
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&servomechanism_tim, TIM_CHANNEL_4);
 
-	//HAL_TIM_PWM_Start(&stepper_motor_tim, TIM_CHANNEL_1);
+	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
+	HAL_TIM_PWM_Start(&stepper_motor_tim, TIM_CHANNEL_1);
+
+	osSemaphoreAcquire(app::input_sem, osWaitForever);
+
+	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_RESET);
+	HAL_TIM_PWM_Stop(&stepper_motor_tim, TIM_CHANNEL_1);
 
 	while(1){
 		osSemaphoreAcquire(main_joint_sem, osWaitForever);
@@ -65,6 +74,24 @@ void motor_controller::main(void* p){
 		}
 	}
 	osThreadTerminate(NULL);
+}
+
+void motor_controller::start_stepper(bool clkwise){ //true -> clockwise, false -> counterclockwise
+	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_SET);
+
+	if(clkwise){
+		HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
+	}
+	else{
+		HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);
+	}
+
+	HAL_TIM_PWM_Start(&stepper_motor_tim, TIM_CHANNEL_1);
+}
+
+void motor_controller::stop_stepper(bool clkwise){
+	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_SET);
+	HAL_TIM_PWM_Stop(&stepper_motor_tim, TIM_CHANNEL_1);
 }
 
 void motor_controller::update_joint_1(void* p){ //stepper motor thread

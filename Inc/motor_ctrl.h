@@ -25,6 +25,8 @@ class motor_controller{
 	static void update_joint_4(void* p);
 	static void update_joint_5(void* p);
 	static uint16_t get_pwm(double angle); //get duty cycle for given servo angle (0 - 180)
+	static void start_stepper(bool clkwise);
+	static void stop_stepper(bool clkwise);
 
 public:
 	static double v1, v2, v3, v4, v5;

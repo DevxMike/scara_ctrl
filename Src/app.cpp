@@ -79,20 +79,7 @@ void app::main(void * params){
 
 
 	while(1){
-		osSemaphoreAcquire(input_sem, osWaitForever);
-		HAL_GPIO_TogglePin(SLEEP_GPIO_Port, SLEEP_Pin);
-		HAL_GPIO_TogglePin(DIR_GPIO_Port, DIR_Pin);
-		/*if(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET){
-				HAL_Delay(50);
-				if(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET){
-					HAL_GPIO_TogglePin(SLEEP_GPIO_Port, SLEEP_Pin);
-					HAL_GPIO_TogglePin(DIR_GPIO_Port, DIR_Pin);
-					while(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET){
-						continue;
-					}
-				}
 
-		}*/
 	}
 	osThreadTerminate(NULL);
 }
@@ -144,8 +131,6 @@ void app::input_check(void * p){
 		if(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET){
 			osDelay(40);
 			if(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET){
-				while(HAL_GPIO_ReadPin(REL_GPIO_Port, REL_Pin) == GPIO_PIN_RESET)
-				osDelay(100);
 				osSemaphoreRelease(input_sem);
 			}
 		}
