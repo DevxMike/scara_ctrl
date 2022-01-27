@@ -27,7 +27,7 @@
 #include "motor_ctrl.h"
 #include "communication.h"
 #include "command_executor.h"
-#include "neural_net.h"
+#include "driver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -81,7 +81,7 @@ const osThreadAttr_t command_exec_attr = {
 	.priority = osPriorityLow
 };
 
-const osThreadAttr_t neural_net_attr = {
+const osThreadAttr_t driver_attr = {
 	.name = "neural_net",
 	.stack_size = (128*4) * 2,
 	.priority = osPriorityLow
@@ -176,7 +176,7 @@ int main(void)
   osThreadNew(motor_controller::main, NULL, &motor_ctrl_attr);
   osThreadNew(communicator::main, NULL, &communication_attr);
   osThreadNew(command_exec::main, NULL, &command_exec_attr);
-  osThreadNew(neural_net::main, NULL, &neural_net_attr);
+  osThreadNew(driver::main, NULL, &driver_attr);
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
 
