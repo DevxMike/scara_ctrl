@@ -78,8 +78,6 @@ void motor_controller::main(void* p){
 }
 
 void motor_controller::start_stepper(bool clkwise){ //true -> clockwise, false -> counterclockwise
-	HAL_GPIO_WritePin(SLEEP_GPIO_Port, SLEEP_Pin, GPIO_PIN_SET);
-
 	if(clkwise){
 		HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);
 	}
@@ -144,4 +142,10 @@ uint16_t motor_controller::get_pwm(double angle){
 	}
 
 	return (5.0/9)*angle + 100;
+}
+
+int32_t motor_controller::get_impulse_qty(int16_t height){
+	int32_t diff = height - (int32_t)z;
+
+	return (max_values::revolutions_per_cm * max_values::resolution * max_values::steps_per_revolution * diff); //measured in mm
 }

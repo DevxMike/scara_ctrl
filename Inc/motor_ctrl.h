@@ -12,6 +12,10 @@ namespace max_values{
 		constexpr uint16_t max_x = 590;
 		constexpr uint16_t max_y = 740;
 		constexpr uint16_t max_z = 240;
+
+		constexpr uint32_t resolution = 16;
+		constexpr uint32_t steps_per_revolution = 200;
+		constexpr uint32_t revolutions_per_cm = 5;
 };
 
 class motor_controller{
@@ -27,10 +31,11 @@ class motor_controller{
 	static uint16_t get_pwm(double angle); //get duty cycle for given servo angle (0 - 180)
 	static void start_stepper(bool clkwise);
 	static void stop_stepper(bool clkwise);
+	static int32_t get_impulse_qty(int16_t height); //returns qty of impulses needed to set the height, if its less than 0 then motor needs to move construction down
 
 public:
 	static double v1, v2, v3, v4, v5;
-	static double x, y, z;
+	static double x, y, z; //z - height
 	static osSemaphoreId_t main_joint_sem;
 
 	static void main(void*);
