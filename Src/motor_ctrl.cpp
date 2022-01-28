@@ -31,6 +31,7 @@ const osThreadAttr_t joint5_ctrl_attr = {
   .priority = (osPriority_t) osPriorityLow,
 };
 
+int32_t motor_controller::stepper_tick{ 0 };
 osSemaphoreId_t motor_controller::main_joint_sem{ osSemaphoreNew(1, 1, NULL) };
 osSemaphoreId_t motor_controller::joint_sem[5]{
 	osSemaphoreNew(1, 1, NULL), osSemaphoreNew(1, 1, NULL), osSemaphoreNew(1, 1, NULL),
@@ -148,4 +149,8 @@ int32_t motor_controller::get_impulse_qty(int16_t height){
 	int32_t diff = height - (int32_t)z;
 
 	return (max_values::revolutions_per_cm * max_values::resolution * max_values::steps_per_revolution * diff); //measured in mm
+}
+
+void motor_controller::stepper_tim_callback(){
+	++stepper_tick;
 }

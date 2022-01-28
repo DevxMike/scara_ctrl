@@ -22,6 +22,7 @@ class motor_controller{
 	static TIM_HandleTypeDef& stepper_motor_tim;
 	static TIM_HandleTypeDef& servomechanism_tim;
 	static osSemaphoreId_t joint_sem[5];
+	static int32_t stepper_tick;
 
 	static void update_joint_1(void* p);
 	static void update_joint_2(void* p);
@@ -38,6 +39,7 @@ public:
 	static double x, y, z; //z - height
 	static osSemaphoreId_t main_joint_sem;
 
+	static void stepper_tim_callback();
 	static void main(void*);
 };
 

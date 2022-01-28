@@ -585,6 +585,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart->Instance == USART2)
 		communicator::rx_callback();
 }
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
+	if(htim->Instance == TIM3){
+		motor_controller::stepper_tim_callback();
+	}
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
