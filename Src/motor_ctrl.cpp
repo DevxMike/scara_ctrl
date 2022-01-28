@@ -37,8 +37,8 @@ osSemaphoreId_t motor_controller::joint_sem[5]{
 			osSemaphoreNew(1, 1, NULL), osSemaphoreNew(1, 1, NULL)
 };
 
-double motor_controller::v1{ 100 }, motor_controller::v2{ 90.0  },
-	   motor_controller::v3{ 90.0 }, motor_controller::v4{ 90.0 },
+double motor_controller::v1{ 100 }, motor_controller::v2{ 0.0 },
+	   motor_controller::v3{ 90.0 }, motor_controller::v4{ 180.0 },
 	   motor_controller::v5{ 90.0 }, motor_controller::x{ 0.0 },
 	   motor_controller::y{ 0.0 }, motor_controller::z{ 0.0 };
 

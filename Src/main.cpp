@@ -56,6 +56,12 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 /* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE BEGIN PV */
 const osThreadAttr_t main_thread_attr = {
 	.name = "main_task",
@@ -170,6 +176,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   osThreadNew(app::main, NULL, &main_thread_attr);
@@ -193,7 +200,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  osThreadSuspend(NULL);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -317,9 +324,9 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 1;
+  htim1.Init.Prescaler = 168 - 1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 1000 - 1;
+  htim1.Init.Period = 2000 - 1;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
