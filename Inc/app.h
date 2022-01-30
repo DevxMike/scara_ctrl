@@ -10,7 +10,6 @@
 #include "main.h"
 #include "uart_wrapper.h"
 #include "cmsis_os.h"
-#include "matrix.h"
 
 class app {
 private:

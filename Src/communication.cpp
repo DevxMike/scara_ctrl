@@ -12,7 +12,7 @@ const char* wrong_packet_code = "A1E";
 const char* acknowledge_packet_code = "A0E";
 
 uint8_t communicator::cmd_buffer[26]{ 0 };
-uint8_t communicator::cmd_num{ 0 };
+uint8_t communicator::cmd_num{ 255 };
 double communicator::cmd_arg{ 0.0 };
 
 osSemaphoreId_t communicator::cmd_sem{ osSemaphoreNew(1, 1, NULL) };
@@ -48,6 +48,7 @@ void communicator::main(void* p){
 							dummy_set_zeros = false;
 							break;
 						}
+						cmd_buffer[i] = 0;
 					}
 					if(dummy_set_zeros){
 						auto arg = strtod((char*)&cmd_buffer[5], NULL);

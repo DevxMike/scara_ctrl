@@ -5,6 +5,7 @@
 
 const char* cmd_executed_code = "A2E";
 const char* no_such_cmd_code = "A3E";
+const char* busy_code = "A4E";
 
 const osThreadAttr_t set_x_attr = {
 	.name = "set_x",
@@ -14,23 +15,22 @@ const osThreadAttr_t set_x_attr = {
 
 void command_exec::main(void* p){
 
-
 	while(1){
 		osSemaphoreAcquire(communicator::cmd_ready_sem, osWaitForever);
 		auto cmd = communicator::cmd_num;
 		auto cmd_arg = communicator::cmd_arg;
 
+
 		if(cmd >= 0 && cmd < 17){
-			communicator::uart_handle << cmd_executed_code;
 			osDelay(1);
 			switch(cmd){
-			case 0: motor_controller::x = cmd_arg; break;
-			case 1: motor_controller::y = cmd_arg; break;
-			case 2: motor_controller::z = cmd_arg; break;
-			case 3: osSemaphoreRelease(driver::driver_sem); break;
+			case 0: if(osSemaphoreGetCount(motor_controller::joint_sem[0]))osSemaphoreRelease(driver::driver_sem); else communicator::uart_handle << busy_code; break;
+			case 1: motor_controller::v2 = cmd_arg; break;
+			case 2: motor_controller::v3 = cmd_arg; break;
+			//case 3: osSemaphoreRelease(driver::driver_sem); break;
 			case 4: communicator::uart_handle << "open handle\n\r"; break;
 			case 5: communicator::uart_handle << "close handle\n\r"; break;
-			case 6: communicator::uart_handle << "set rot handle\n\r"; break;
+			case 6: motor_controller::v4 = cmd_arg; break;
 			case 7:
 				if(++motor_controller::v1 >= max_values::max_v1){
 					motor_controller::v1 = max_values::max_v1;
@@ -84,8 +84,9 @@ void command_exec::main(void* p){
 			break; //dec5
 			}
 		}
-		if(cmd > 3){
+		if(cmd > 0){
 			osSemaphoreRelease(motor_controller::main_joint_sem);
+			communicator::uart_handle << cmd_executed_code;
 		}
 		else{
 			communicator::uart_handle << no_such_cmd_code;
