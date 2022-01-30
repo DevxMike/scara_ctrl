@@ -84,11 +84,11 @@ void command_exec::main(void* p){
 			break; //dec5
 			}
 		}
-		if(cmd > 0){
+		if(cmd > 0 && cmd < 17){
 			osSemaphoreRelease(motor_controller::main_joint_sem);
 			communicator::uart_handle << cmd_executed_code;
 		}
-		else{
+		else if(cmd >= 17){
 			communicator::uart_handle << no_such_cmd_code;
 		}
 	}
