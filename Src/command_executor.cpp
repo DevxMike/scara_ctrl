@@ -27,9 +27,8 @@ void command_exec::main(void* p){
 			case 0: if(osSemaphoreGetCount(motor_controller::joint_sem[0]))osSemaphoreRelease(driver::driver_sem); else communicator::uart_handle << busy_code; break;
 			case 1: motor_controller::v2 = cmd_arg; break;
 			case 2: motor_controller::v3 = cmd_arg; break;
-			//case 3: osSemaphoreRelease(driver::driver_sem); break;
-			case 4: communicator::uart_handle << "open handle\n\r"; break;
-			case 5: communicator::uart_handle << "close handle\n\r"; break;
+			case 4: motor_controller::v5 = 180.0; break; //open handle
+			case 5: motor_controller::v5 = 80.0; break;
 			case 6: motor_controller::v4 = cmd_arg; break;
 			case 7:
 				if(++motor_controller::v1 >= max_values::max_v1){
